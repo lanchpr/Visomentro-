@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Visódromo - 3 Continentes</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+  :root {
+    --primary-color: #bb86fc; /* Roxo Android Dark */
+    --background: #121212;
+    --surface: #1e1e1e;
+    --on-surface: #e1e1e1;
+    --secondary-text: #a0a0a0;
+    --error: #cf6679;
+    --success: #03dac6;
+    --btn-danger: #b00020;
+    --btn-success: #018786;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    margin: 0;
+    background-color: var(--background);
+    color: var(--on-surface);
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  /* Container simulando a tela do celular */
+  .app-container {
+    width: 100%;
+    max-width: 480px;
+    background-color: var(--background);
+    padding-bottom: 20px;
+    position: relative;
+  }
+
+  /* App Bar (Topo estilo Android) */
+  .app-bar {
+    background-color: var(--surface);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 5px rgba(0,0,0,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .app-bar-title {
+    font-size: 20px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .app-bar-icons span {
+    color: var(--on-surface);
+    margin-left: 15px;
+    cursor: pointer;
+  }
+
+  /* Logo no Header */
+  .profile-section {
+    padding: 24px 16px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--background) 100%);
+    border-bottom: 1px solid #333;
+  }
+
+  .app-logo {
+    width: 90px;
+    height: 90px;
+    border-radius: 20px; /* Estilo ícone de app */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    margin-bottom: 12px;
+  }
+
+  .dev-name {
+    color: var(--primary-color);
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .app-desc {
+    color: var(--secondary-text);
+    font-size: 13px;
+    margin-top: 5px;
+  }
+
+  /* Cards de Conteúdo */
+  .content { padding: 16px; }
+
+  .card {
+    background-color: var(--surface);
+    border-radius: 12px; /* Padrão Material */
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .country-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge-time {
+    background-color: rgba(255,255,255,0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+
+  .card-body p {
+    font-size: 14px;
+    color: var(--secondary-text);
+    line-height: 1.5;
+    margin: 0 0 16px 0;
+  }
+
+  /* Botões Estilo Android */
+  .action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  button {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 24px; /* Formato Pill */
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .btn-start {
+    background-color: transparent;
+    color: var(--success);
+    border: 1px solid var(--success);
+  }
+  .btn-start:active { background-color: rgba(3, 218, 198, 0.1); }
+
+  .btn-stop {
+    background-color: rgba(207, 102, 121, 0.1);
+    color: var(--error);
+  }
+  .btn-stop:active { background-color: rgba(207, 102, 121, 0.2); }
+
+  /* Status / Timer */
+  .status-bar {
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--on-surface);
+    min-height: 20px;
+    padding: 8px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    display: none; /* Escondido até ativar */
+  }
+
+  /* Footer */
+  .footer-legal {
+    text-align: center;
+    font-size: 11px;
+    color: #555;
+    margin-top: 20px;
+    padding: 0 20px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  
+  <div class="app-bar">
+    <div class="app-bar-title">
+      <span class="material-icons">menu</span>
+      Visódromo
+    </div>
+    <div class="app-bar-icons">
+      <span class="material-icons">search</span>
+      <span class="material-icons">more_vert</span>
+    </div>
+  </div>
+
+  <div class="profile-section">
+    <img src="https://i.postimg.cc/CLFDXmFx/Picsart-26-01-13-12-58-43-876.png" alt="Logo App" class="app-logo">
+    <div class="dev-name">Achismos Studio Inc.</div>
+    <div class="app-desc">"3 Continentes": O app que expulsa visita chata com a delicadeza do Maurício Meirelles.</div>
+  </div>
+
+  <div class="content">
+    
+    <div class="card">
+      <div class="card-header">
+        <h2 class="country-title">🇧🇷 Brasil</h2>
+        <span class="badge-time">1 min</span>
+      </div>
+      <div class="card-body">
+        <p>A visita já chegou contando da cirurgia da vizinha e pedindo a senha do Wi-Fi? Tolerância zero pra palestrinha.</p>
+        <div class="action-buttons">
+          <button class="btn-start" onclick="start('br',60)">
+            <span class="material-icons">play_arrow</span> Iniciar
+          </button>
+          <button class="btn-stop" onclick="stop()">
+            <span class="material-icons">block</span> Expulsar
+          </button>
+        </div>
+        <div class="status-bar" id="br"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="country-title">🇦🇴 Angola</h2>
+        <span class="badge-time">45 seg</span>
+      </div>
+      <div class="card-body">
+        <p>Resenha boa, mas minha paciência é curta. Não confunda hospitalidade com hospedagem vitalícia.</p>
+        <div class="action-buttons">
+          <button class="btn-start" onclick="start('ao',45)">
+            <span class="material-icons">play_arrow</span> Iniciar
+          </button>
+          <button class="btn-stop" onclick="stop()">
+            <span class="material-icons">block</span> Encerrar
+          </button>
+        </div>
+        <div class="status-bar" id="ao"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="country-title">🇨🇳 China</h2>
+        <span class="badge-time">30 seg</span>
+      </div>
+      <div class="card-body">
+        <p>Eficiência industrial. Se em 30 segundos não gerou lucro ou fofoca nova, pode vazar.</p>
+        <div class="action-buttons">
+          <button class="btn-start" onclick="start('cn',30)">
+            <span class="material-icons">play_arrow</span> Iniciar
+          </button>
+          <button class="btn-stop" onclick="stop()">
+            <span class="material-icons">block</span> Tchau
+          </button>
+        </div>
+        <div class="status-bar" id="cn"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="country-title">🇫🇷 França</h2>
+        <span class="badge-time">10 seg</span>
+      </div>
+      <div class="card-body">
+        <p>Fez bico? Julgou a decoração? Leva o croissant e some da minha frente. Au revoir.</p>
+        <div class="action-buttons">
+          <button class="btn-start" onclick="start('fr',10)">
+            <span class="material-icons">play_arrow</span> Iniciar
+          </button>
+          <button class="btn-stop" onclick="stop()">
+            <span class="material-icons">block</span> Adieu
+          </button>
+        </div>
+        <div class="status-bar" id="fr"></div>
+      </div>
+    </div>
+
+    <div class="footer-legal">
+      Versão 6.6.6 (Build Meirelles)<br>
+      Este app não garante a preservação das suas amizades.
+    </div>
+
+  </div>
+</div>
+
+<audio id="alarm" loop>
+  <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" type="audio/ogg">
+</audio>
+
+<script>
+let timer, timeLeft, current;
+const alarm = document.getElementById('alarm');
+
+function resetUI() {
+  // Esconde todas as barras de status ao iniciar um novo ou parar
+  document.querySelectorAll('.status-bar').forEach(el => el.style.display = 'none');
+}
+
+function start(id,time){
+  stop();
+  resetUI();
+  current=id;
+  timeLeft=time;
+  
+  // Mostra a barra de status do card atual
+  const statusEl = document.getElementById(id);
+  statusEl.style.display = 'block';
+  statusEl.style.color = '#fff';
+  statusEl.style.background = 'rgba(3, 218, 198, 0.1)'; // Cor de "Rodando"
+  
+  update();
+  timer=setInterval(()=>{
+    timeLeft--;
+    update();
+    if(timeLeft<=0){
+      clearInterval(timer);
+      statusEl.innerText='⏰ ACABOU! RALA PEITO! 😈';
+      statusEl.style.color = '#cf6679'; // Cor de erro
+      statusEl.style.background = 'rgba(207, 102, 121, 0.1)';
+      alarm.play();
+    }
+  },1000);
+}
+
+function stop(){
+  clearInterval(timer);
+  alarm.pause();
+  alarm.currentTime=0;
+  if(current) {
+    const statusEl = document.getElementById(current);
+    statusEl.innerText='🛑 EXPULSÃO CANCELADA (POR ENQUANTO).';
+    statusEl.style.color = '#a0a0a0';
+    statusEl.style.background = 'rgba(255,255,255,0.05)';
+  }
+}
+
+function update(){
+  const statusEl = document.getElementById(current);
+  statusEl.innerText=`⏳ A paciência acaba em: ${timeLeft}s`;
+}
+</script>
+
+</body>
+</html>
+
